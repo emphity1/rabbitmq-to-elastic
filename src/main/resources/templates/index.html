@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>RabbitMQ Example</title>
+</head>
+<body>
+    <h1>RabbitMQ Example</h1>
+    
+    <form th:action="@{/publish}" method="post">
+        <label for="message">Message:</label>
+        <input type="text" name="message" required />
+        <button type="submit">Send Message</button>
+    </form>
+    
+    <div th:if="${successMessage}">
+        <p th:text="${successMessage}" style="color: green;"></p>
+    </div>
+</body>
+</html>
