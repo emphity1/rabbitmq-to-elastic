@@ -6,10 +6,10 @@
 <body>
     <h1>RabbitMQ Example</h1>
     
-    <form th:action="@{/publish}" method="post">
-        <label for="message">Message:</label>
-        <input type="text" name="message" required />
-        <button type="submit">Send Message</button>
+    <form th:action="@{/publish}" method="post" enctype="multipart/form-data">
+        <label for="file">JSON File:</label>
+        <input type="file" name="file" required accept=".json" />
+        <button type="submit">Send JSON</button>
     </form>
     
     <div th:if="${successMessage}">
