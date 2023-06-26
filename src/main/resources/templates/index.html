@@ -2,14 +2,36 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>RabbitMQ Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
 </head>
 <body>
-    <h1>RabbitMQ Example</h1>
+    <script>
+        function submitForm() {
+            var fileInput = document.getElementById("fileInput");
+            var file = fileInput.files[0];
+            if (file) {
+                var formData = new FormData();
+                formData.append("file", file);
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "/publish", true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        alert("File uploaded successfully!");
+                    }
+                };
+                xhr.send(formData);
+            } else {
+                alert("Please select a file");
+            }
+        }
+    </script>
+    <h1>RabbitMQ </h1>
     
-    <form th:action="@{/publish}" method="post">
-        <label for="message">Message:</label>
-        <input type="text" name="message" required />
-        <button type="submit">Send Message</button>
+    <form id="messageForm" th:action="@{/publish}" method="post" enctype="multipart/form-data">
+        <label for="fileInput">File:</label>
+        <input type="file" id="fileInput" name="file" required />
+        <button type="button" onclick="submitForm()">Send File</button>
     </form>
     
     <div th:if="${successMessage}">

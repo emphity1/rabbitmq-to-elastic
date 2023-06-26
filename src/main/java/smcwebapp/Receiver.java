@@ -1,55 +1,47 @@
 package smcwebapp;
 
-import org.apache.http.HttpHost;
-import org.elasticsearch.client.RestClient;
+import java.util.Map;
+
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-import org.elasticsearch.client.Request;
-import org.elasticsearch.client.Response;
 
-import java.util.Collections;
-
-
-
-// File: Receiver.java
-
-
-
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 
 // ...
 
 @Component
 public class Receiver {
 
-    RestClient restClient = RestClient.builder(new HttpHost("localhost", 9200, "http")).build();
-    String indexName = "index-dima";
-    ObjectMapper objectMapper = new ObjectMapper();
+    private final RestHighLevelClient restClient;
+    private final String indexName = "dima-node";
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    public Receiver(RestHighLevelClient restClient) {
+        this.restClient = restClient;
+    }
 
     @RabbitListener(queues = MessagingRabbitmqApplication.queueName)
-    public void receiveMessage(String message) {
-        System.out.println("Received message: " + message);
+    public void receiveMessage(String payload) {
+        System.out.println("Received message: " + payload);
         try {
-            // Index the message
-            String json = objectMapper.writeValueAsString(Collections.singletonMap("message", message));
-
-            Request request = new Request("POST", "/" + indexName + "/_doc");
-            request.setJsonEntity(json);
-
-            Response response = restClient.performRequest(request);
-
-            // Check the response status
-            int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode == 201) {
-                // Document indexed successfully
-                System.out.println("Document indexed successfully");
-            } else {
-                // Document indexing failed
-                System.out.println("Failed to index document. Status code: " + statusCode);
-            }
+            // Converti la stringa JSON in una mappa
+            Map<String, Object> message = objectMapper.readValue(payload, new TypeReference<Map<String, Object>>() {});
+    
+            // Indicizza il messaggio
+            String json = objectMapper.writeValueAsString(message);
+            IndexRequest indexRequest = new IndexRequest(indexName).source(json, XContentType.JSON);
+            restClient.index(indexRequest, RequestOptions.DEFAULT);
+    
+            // Documento indicizzato con successo
+            System.out.println("Document indexed successfully");
         } catch (Exception e) {
             System.out.println(e);
         }
     }
+    
 }
