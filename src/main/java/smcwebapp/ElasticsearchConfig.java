@@ -11,12 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class ElasticsearchConfig {
 
 
-    //String node1IP = System.getenv("NODE1_PORT_9201_TCP_ADDR");
-
-    //String elasticsearchHost = "http://" + node1IP;
-
-    //@Value("${ELASTICSEARCH_PORT}")
-    //private int elasticsearchPort;
+  
 
     @Bean
     public RestHighLevelClient elasticsearchCustomClient() {
