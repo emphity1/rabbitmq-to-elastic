@@ -1,0 +1,129 @@
+version: '3'
+services:
+
+
+
+
+#########################   RABBITMQ    #########################
+
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - 15672:15672
+      - 5672:5672
+    networks:
+      - esnet
+
+
+#########################   NODO1    #########################
+  node1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    environment:
+      - node.name=node1
+      - cluster.name=dima-node
+      - discovery.seed_hosts=node2,node3
+      - cluster.initial_master_nodes=node1,node2,node3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - type: tmpfs
+        target: /usr/share/elasticsearch/data
+    ports:
+      - 9201:9200
+      - 9301:9300
+    networks:
+      - esnet
+
+#########################   NODO2  #########################
+  node2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    environment:
+      - node.name=node2
+      - cluster.name=dima-node
+      - discovery.seed_hosts=node1,node3
+      - cluster.initial_master_nodes=node1,node2,node3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - type: tmpfs
+        target: /usr/share/elasticsearch/data
+    ports:
+      - 9202:9200
+      - 9302:9300
+    networks:
+      - esnet
+
+#########################   NODO3    #########################
+  node3:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+    environment:
+      - node.name=node3
+      - cluster.name=dima-node
+      - discovery.seed_hosts=node1,node2
+      - cluster.initial_master_nodes=node1,node2,node3
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - type: tmpfs
+        target: /usr/share/elasticsearch/data
+    ports:
+      - 9203:9200
+      - 9303:9300
+    networks:
+      - esnet
+
+#########################   KIBANA    #########################
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.12.1
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=["http://node1:9200","http://node2:9200","http://node3:9200"]
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=elastic
+    networks:
+      - esnet
+ 
+
+###################### MY APP ################################
+
+  myapp:
+    depends_on:
+      - rabbitmq
+      - node1
+      - node2
+      - node3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+    ports:
+      - 8080:8080
+    networks:
+      - esnet
+
+
+  
+
+
+volumes:
+  esdata1:
+  esdata2:
+  esdata3:
+
+networks:
+  esnet:

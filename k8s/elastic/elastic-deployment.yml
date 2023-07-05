@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: node
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: elastic
+  serviceName: elastic-service
+  template:
+    metadata:
+      labels:
+        app: elastic
+    spec:
+      initContainers:
+        - name: sysctl
+          image: busybox
+          command: ["sysctl", "-w", "vm.max_map_count=262144"]
+          securityContext:
+            privileged: true
+      containers:
+        - env:
+          - name: cluster.name
+            value: dima-node
+          - name: node.name
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: discovery.seed_hosts
+            value: "node-0.elastic-service,node-1.elastic-service,node-2.elastic-service"
+          - name: cluster.initial_master_nodes
+            value: "node-0,node-1,node-2"
+          - name: ES_JAVA_OPTS
+            value: "-Xms512m -Xmx512m"
+          name: elastic
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.12.1
+          ports:
+            - containerPort: 9200
+              name: http
+            - containerPort: 9300
+              name: transport
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: 500m
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: standard
+        resources:
+          requests:
+            storage: 8Gi

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>RabbitMQ Example</title>
+</head>
+<body>
+    <h1>RabbitMQ Example</h1>
+    
+    <form th:action="@{/publish}" method="post" enctype="multipart/form-data">
+        <label for="file">JSON File:</label>
+        <input type="file" name="file" required accept=".json" />
+        <button type="submit">Send JSON</button>
+    </form>
+    
+    <div th:if="${successMessage}">
+        <p th:text="${successMessage}" style="color: green;"></p>
+    </div>
+</body>
+</html>
