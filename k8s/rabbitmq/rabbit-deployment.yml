@@ -23,9 +23,16 @@ spec:
               name: amqp
           env:
             - name: RABBITMQ_DEFAULT_USER
-              value: guest
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-configMap
+                  key: RABBITMQ_DEFAULT_USER
+
             - name: RABBITMQ_DEFAULT_PASS
-              value: guest
+              valueFrom:
+                configMapKeyRef:
+                  name: rabbitmq-configMap
+                  key: RABBITMQ_DEFAULT_PASS
           volumeMounts:
             - name: rabbitmq-data
               mountPath: /var/lib/rabbitmq

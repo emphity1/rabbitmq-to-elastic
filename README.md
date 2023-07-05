@@ -13,7 +13,7 @@ Startare minikube
 
 Per fare apply di tutti file yml, si può utilizzare "launcher.sh" che sta nella cartella k8s, controllare i percorsi nello script prima di lanciarlo.
 
-
+Si è utilizzato principalmente LENS come interface per k8s.
 
 
                                 ###############################################
@@ -68,11 +68,10 @@ paths:
 
 ============================================================================
 
-Avviare: minikube start
 
-Avviare deployment, servizio e ingress.
 
-Port forwarding non serve
+
+
 
 Per verificare lo stato dei nodi:
 

@@ -5,6 +5,16 @@
 path="/home/dima/Desktop/esercitazione/k8s/k8s-test"
 
 
+
+echo " =========================================== "
+echo " ======   SETTING CONFIGMAP   ============== "
+echo " =========================================== "
+
+cd "$path"/configmaps && kubectl apply -f elastic-configMap.yml
+cd "$path"/configmaps && kubectl apply -f rabbitmq-configMap.yml
+
+
+
 echo " =========================================== "
 echo " ======   STARTING RABBITMQ   ============== "
 echo " =========================================== "
