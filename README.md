@@ -9,12 +9,18 @@ Buildare app maven e portarlo nella cartella docker-compose.
 Buildare l'immagine del del Dockerfile che si prenderà lo jar creato precedentemente. Questo jar servirà poi per il pod su k8s.
 Uploadare eventualmente l'immagine su dockerhub.
 
+Startare minikube
+
+Per fare apply di tutti file yml, si può utilizzare "launcher.sh" che sta nella cartella k8s, controllare i percorsi nello script prima di lanciarlo.
 
 
 
 
 
 
+====================================================================
+==================      Kubernetes     =============================
+====================================================================
 
 ===================  elastic-deployment.yml   ===================
 
