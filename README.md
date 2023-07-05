@@ -19,7 +19,7 @@ Per fare apply di tutti file yml, si può utilizzare "launcher.sh" che sta nella
 
 
 ==================================================
-===============   Kubernetes  ====================
+==========   Kubernetes  ====================
 ==================================================
 
 ===================  elastic-deployment.yml   ===================
