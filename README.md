@@ -5,10 +5,18 @@
                                 ###############################################
 
 
+Buildare app maven e portarlo nella cartella docker-compose.
+Buildare l'immagine del del Dockerfile che si prenderà lo jar creato precedentemente. Questo jar servirà poi per il pod su k8s.
+Uploadare eventualmente l'immagine su dockerhub.
+
+
+
+
+
+
+
+
 ===================  elastic-deployment.yml   ===================
-
-
-
 
 
 metadata - specifica il nome del pod che sarà creato
